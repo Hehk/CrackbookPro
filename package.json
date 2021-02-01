@@ -2,6 +2,7 @@
   "name": "rescript-project-template",
   "version": "0.0.1",
   "scripts": {
+    "build-extension": "webpack",
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
     "start": "bsb -make-world -w"
@@ -12,6 +13,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "*"
-  }
+    "bs-platform": "*",
+    "webpack": "^5.19.0",
+    "webpack-cli": "^4.4.0"
+  },
+  "dependencies": {}
 }
