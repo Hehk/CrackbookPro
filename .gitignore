@@ -1,7 +1,7 @@
 .DS_Store
 /node_modules/
 /lib/
-/dist/*.build.js
+/dist/*.bundle.js
 /src/*.bs.js
 .bsb.lock
 .merlin

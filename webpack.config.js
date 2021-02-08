@@ -4,9 +4,12 @@ module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   target: 'web',
-  entry: './src/Background.bs.js',
+  entry:  {
+    background: './src/Background.bs.js',
+    content: './src/Content.bs.js'
+  },
   output: {
-    filename: 'background.build.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
 };

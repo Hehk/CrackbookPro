@@ -2,9 +2,21 @@
 type request
 type sender
 type sendResponse = unit => unit
-type listener = (request, sender, sendResponse) => unit
+type messageSender = {
+  // https://developer.chrome.com/docs/extensions/reference/runtime/#type-MessageSender
+  // Finish this out
+  frameId: option<int>,
+  id: option<string>,
+  nativeApplication: option<string>
+}
+
+type message = {
+  shouldFilter: bool
+}
+
 module Runtime = {
-  @bs.val external onMessage : listener => unit = "chrome.runtime.onMessage.addListener"
+  type onMessageListener = (message, messageSender, message => ()) => bool
+  @bs.val external onMessage : onMessageListener => unit = "chrome.runtime.onMessage.addListener"
 }
 
 module Tabs = {
@@ -21,7 +33,9 @@ module Tabs = {
     active: bool,
     audible: option<bool>,
     autoDiscardable: option<bool>,
-    url: option<string>
+    url: option<string>,
+    id: option<int>,
+    status: option<string>
     // TODO fill this out https://developer.chrome.com/docs/extensions/reference/tabs/#type-Tab
   }
   type mutedInfo
@@ -41,4 +55,11 @@ module Tabs = {
   }
   type onUpdateListener = (int, changeInfo, t) => unit
   @bs.val external onUpdated : onUpdateListener => unit = "chrome.tabs.onUpdated.addListener"
+
+  // TODO break out this message passing stuff into a functor,
+  // that takes in a message type
+
+  @bs.val external sendMessage : (int, message, message => ()) => unit = "chrome.tabs.sendMessage"
+
+
 }
