@@ -7,16 +7,14 @@ type messageSender = {
   // Finish this out
   frameId: option<int>,
   id: option<string>,
-  nativeApplication: option<string>
+  nativeApplication: option<string>,
 }
 
-type message = {
-  shouldFilter: bool
-}
+type message = {shouldFilter: bool}
 
 module Runtime = {
-  type onMessageListener = (message, messageSender, message => ()) => bool
-  @bs.val external onMessage : onMessageListener => unit = "chrome.runtime.onMessage.addListener"
+  type onMessageListener = (message, messageSender, message => unit) => bool
+  @bs.val external onMessage: onMessageListener => unit = "chrome.runtime.onMessage.addListener"
 }
 
 module Tabs = {
@@ -27,7 +25,7 @@ module Tabs = {
     "muted": bool,
     "openerTabId": int,
     "pinned": bool,
-    "url": string
+    "url": string,
   }
   type t = {
     active: bool,
@@ -35,12 +33,12 @@ module Tabs = {
     autoDiscardable: option<bool>,
     url: option<string>,
     id: option<int>,
-    status: option<string>
+    status: option<string>,
     // TODO fill this out https://developer.chrome.com/docs/extensions/reference/tabs/#type-Tab
   }
   type mutedInfo
   // https://developer.chrome.com/docs/extensions/reference/tabs/#method-update
-  @bs.val external update : (int, updateProperties, t => unit) => unit = "chrome.tabs.update"
+  @bs.val external update: (int, updateProperties, t => unit) => unit = "chrome.tabs.update"
   type changeInfo = {
     audible: option<bool>,
     autoDiscardable: option<bool>,
@@ -51,15 +49,13 @@ module Tabs = {
     pinned: option<bool>,
     status: option<string>,
     title: option<string>,
-    url: option<string>
+    url: option<string>,
   }
   type onUpdateListener = (int, changeInfo, t) => unit
-  @bs.val external onUpdated : onUpdateListener => unit = "chrome.tabs.onUpdated.addListener"
+  @bs.val external onUpdated: onUpdateListener => unit = "chrome.tabs.onUpdated.addListener"
 
   // TODO break out this message passing stuff into a functor,
   // that takes in a message type
 
-  @bs.val external sendMessage : (int, message, message => ()) => unit = "chrome.tabs.sendMessage"
-
-
+  @bs.val external sendMessage: (int, message, message => unit) => unit = "chrome.tabs.sendMessage"
 }
