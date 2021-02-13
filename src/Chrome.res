@@ -10,11 +10,16 @@ type messageSender = {
   nativeApplication: option<string>,
 }
 
-type message = {shouldFilter: bool}
+// TODO figure out if there is a way to make forground
+// message type and background message type
+type message =
+  | FilterStatus(bool)
+  | CheckFilter(string)
 
 module Runtime = {
-  type onMessageListener = (message, messageSender, message => unit) => bool
+  type onMessageListener = (message, messageSender, message => unit) => unit
   @bs.val external onMessage: onMessageListener => unit = "chrome.runtime.onMessage.addListener"
+  @bs.val external sendMessage: (message, message => unit) => unit = "chrome.runtime.sendMessage"
 }
 
 module Tabs = {
