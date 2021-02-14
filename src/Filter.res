@@ -21,14 +21,14 @@ let withinPeriod = (startTime, endTime, time) => {
 // TODO move this out to a config file
 // TODO make this a param of shouldFilter
 let filters = [
-  /* { */
-  /*   patterns: [%re("/youtube\.com/g")], */
-  /*   days: [1, 2, 3, 4, 5, 6, 7], */
-  /*   startTime: parseTime("00:00"), */
-  /*   endTime: parseTime("13:00"), */
-  /* }, */
   {
-    patterns: [%re("/twitter\.com/g"), %re("/reddit\.com/g")],
+    patterns: [%re("/youtube\.com/")],
+    days: [1, 2, 3, 4, 5, 6, 7],
+    startTime: parseTime("00:00"),
+    endTime: parseTime("13:00"),
+  },
+  {
+    patterns: [%re("/twitter\.com/"), %re("/reddit\.com/")],
     days: [1, 2, 3, 4, 5, 6, 7],
     startTime: parseTime("00:00"),
     endTime: parseTime("18:00"),

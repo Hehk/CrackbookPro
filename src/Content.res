@@ -45,14 +45,16 @@ let removeOverlay = () => {
   }
 }
 
-let updateOverlay = () => {
-  Js.log("Update Overlay")
-  Chrome.Runtime.sendMessage(CheckFilter(Location.href), message => {
+Chrome.Runtime.onMessage((message, _) => {
     switch message {
     | FilterStatus(shouldFilter) => shouldFilter ? applyOverlay() : removeOverlay()
     | CheckFilter(_) => ()
     }
-  })
+})
+
+let notifyBackground = () => {
+  Js.log("Update Overlay")
+  Chrome.Runtime.sendMessage(CheckFilter(Location.href))
 }
 
-updateOverlay()
+notifyBackground()

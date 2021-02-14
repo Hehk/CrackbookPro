@@ -2,25 +2,12 @@
 type request
 type sender
 type sendResponse = unit => unit
-type messageSender = {
-  // https://developer.chrome.com/docs/extensions/reference/runtime/#type-MessageSender
-  // Finish this out
-  frameId: option<int>,
-  id: option<string>,
-  nativeApplication: option<string>,
-}
 
 // TODO figure out if there is a way to make forground
 // message type and background message type
 type message =
   | FilterStatus(bool)
   | CheckFilter(string)
-
-module Runtime = {
-  type onMessageListener = (message, messageSender, message => unit) => unit
-  @bs.val external onMessage: onMessageListener => unit = "chrome.runtime.onMessage.addListener"
-  @bs.val external sendMessage: (message, message => unit) => unit = "chrome.runtime.sendMessage"
-}
 
 module Tabs = {
   type updateProperties = {
@@ -62,5 +49,20 @@ module Tabs = {
   // TODO break out this message passing stuff into a functor,
   // that takes in a message type
 
-  @bs.val external sendMessage: (int, message, message => unit) => unit = "chrome.tabs.sendMessage"
+  @bs.val external sendMessage: (int, message) => unit = "chrome.tabs.sendMessage"
+}
+
+type messageSender = {
+  // https://developer.chrome.com/docs/extensions/reference/runtime/#type-MessageSender
+  // Finish this out
+  frameId: option<int>,
+  id: option<string>,
+  nativeApplication: option<string>,
+  tab: option<Tabs.t>,
+}
+
+module Runtime = {
+  type onMessageListener = (message, messageSender) => unit
+  @bs.val external onMessage: onMessageListener => unit = "chrome.runtime.onMessage.addListener"
+  @bs.val external sendMessage: message => unit = "chrome.runtime.sendMessage"
 }
