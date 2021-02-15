@@ -6,7 +6,7 @@ type sendResponse = unit => unit
 // TODO figure out if there is a way to make forground
 // message type and background message type
 type message =
-  | FilterStatus(bool)
+  | Filter(Filter.mode)
   | CheckFilter(string)
 
 module Tabs = {

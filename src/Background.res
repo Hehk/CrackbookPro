@@ -1,11 +1,11 @@
 open Chrome
 
-let sendFilterStatus = (filterStatus, sender) => {
+let sendFilter = (filter, sender) => {
   switch sender.tab {
   | Some(tab) =>
     switch tab.id {
     | Some(id) =>
-      let message = FilterStatus(filterStatus)
+      let message = Filter(filter)
       Tabs.sendMessage(id, message)
     | None => ()
     }
@@ -15,7 +15,9 @@ let sendFilterStatus = (filterStatus, sender) => {
 
 Runtime.onMessage((message, sender) => {
   switch message {
-  | CheckFilter(url) => Filter.shouldFilter(~url, ~time=Js.Date.make())->sendFilterStatus(sender)
+  | CheckFilter(url) => 
+    let filter = Filter.getFilter(~url, ~time=Js.Date.make())
+    sendFilter(filter, sender)
   | _ => ()
   }
 })
