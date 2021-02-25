@@ -13,6 +13,10 @@
   "suffix": ".bs.js",
   "bs-dependencies": [
   ],
+  "bsc-flags": ["-open Belt"],
+  "js-post-build": {
+    "cmd": "./esbuild.js"
+  },
   "warnings": {
     "error" : "+101"
   }

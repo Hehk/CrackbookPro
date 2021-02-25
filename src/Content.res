@@ -47,69 +47,32 @@ let removeOverlay = () => {
   }
 }
 
-let timeout = ref(None)
-let url = ref(Location.href)
-let filterStatus = ref(Filter.Off)
-
-let applyFilter = filter => {
-  switch filter {
-  | Off => removeOverlay()
-  | Delay(delay) =>
-    applyOverlay("Delayed for " ++ Belt.Int.toString(delay))
-    timeout := Some(Window.setTimeout(() => removeOverlay(), delay * 1000))
-  | Block => applyOverlay("Blocked")
-  }
-}
-
-let updateOverlay = filter => {
-  switch filterStatus.contents {
-  | Off
+let render = state => {
+  open App
+  switch state.filter {
+  | Delay(time) =>
+    applyOverlay("Delayed: " ++ Int.toString(time))
   | Block =>
-    applyFilter(filter)
-  | Delay(_) =>
-    switch filter {
-    | Delay(_)
-    | Off => ()
-    | Block => applyFilter(filter)
-    }
+    applyOverlay("BLOCKED")
+  | Off => removeOverlay()
   }
 }
 
-Chrome.Runtime.onMessage((message, _) => {
-  switch message {
-  | Filter(filter) =>
-    updateOverlay(filter)
-    filterStatus := filter
-  | CheckFilter(_) => ()
+module Foreground = App.CreateForeground({
+  let onMessage = f => {
+    Chrome.Runtime.onMessage((message, _sender) => f(message))
   }
+
+  let sendMessage = Chrome.Runtime.sendMessage
+  let onStateChange = render
 })
 
-let notifyBackground = () => {
-  Chrome.Runtime.sendMessage(CheckFilter(url.contents))
-}
-
-let pingForFilterUpdate = Window.setInterval(() => {
-  switch filterStatus.contents {
-  | Off
-  | Block =>
-    notifyBackground()
-  | _ => ()
-  }
-}, 1000 * 60)
-
 let watchUrlChange = Window.setInterval(() => {
-  if url.contents !== Location.href {
-    url := Location.href
-    notifyBackground()
+  if Foreground.state.contents.url !== Location.href {
+    Foreground.reduce(ChangeUrl(Location.href))
   }
 }, 1000)
 
-notifyBackground()
-
-Window.onFocus(Window.window, notifyBackground)
-Window.onBlur(Window.window, () => {
-  switch timeout.contents {
-  | None => ()
-  | Some(t) => Window.clearTimeout(t)
-  }
-})
+Foreground.reduce(Init)
+Window.onFocus(Window.window, () => Foreground.reduce(Init))
+Window.onBlur(Window.window, () => Foreground.reduce(Cleanup))

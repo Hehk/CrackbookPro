@@ -1,23 +1,20 @@
-open Chrome
-
-let sendFilter = (filter, sender) => {
-  switch sender.tab {
-  | Some(tab) =>
-    switch tab.id {
-    | Some(id) =>
-      let message = Filter(filter)
-      Tabs.sendMessage(id, message)
-    | None => ()
-    }
-  | None => ()
+%%raw(`require('crx-hotreload')`)
+module Background = App.CreateBackground({
+  type id = int
+  let sendMessage = (id, message) => {
+    Chrome.Tabs.sendMessage(id, message)
   }
-}
-
-Runtime.onMessage((message, sender) => {
-  switch message {
-  | CheckFilter(url) => 
-    let filter = Filter.getFilter(~url, ~time=Js.Date.make())
-    sendFilter(filter, sender)
-  | _ => ()
+  let onMessage = f => {
+    Chrome.Runtime.onMessage((message, sender) => {
+      switch sender.tab {
+      | Some(tab) => switch tab.id {
+          | Some(id) => {
+            f(id, message)
+          }
+          | None => ()
+        }
+      |None => ()
+      }
+    })
   }
 })

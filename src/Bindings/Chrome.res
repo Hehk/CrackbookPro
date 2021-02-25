@@ -3,12 +3,6 @@ type request
 type sender
 type sendResponse = unit => unit
 
-// TODO figure out if there is a way to make forground
-// message type and background message type
-type message =
-  | Filter(Filter.mode)
-  | CheckFilter(string)
-
 module Tabs = {
   type updateProperties = {
     "active": bool,
@@ -49,7 +43,7 @@ module Tabs = {
   // TODO break out this message passing stuff into a functor,
   // that takes in a message type
 
-  @bs.val external sendMessage: (int, message) => unit = "chrome.tabs.sendMessage"
+  @bs.val external sendMessage: (int, 'message) => unit = "chrome.tabs.sendMessage"
 }
 
 type messageSender = {
@@ -62,7 +56,7 @@ type messageSender = {
 }
 
 module Runtime = {
-  type onMessageListener = (message, messageSender) => unit
-  @bs.val external onMessage: onMessageListener => unit = "chrome.runtime.onMessage.addListener"
-  @bs.val external sendMessage: message => unit = "chrome.runtime.sendMessage"
+  type onMessageListener<'message> = ('message, messageSender) => unit
+  @bs.val external onMessage: onMessageListener<'message> => unit = "chrome.runtime.onMessage.addListener"
+  @bs.val external sendMessage: 'message => unit = "chrome.runtime.sendMessage"
 }
