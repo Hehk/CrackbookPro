@@ -40,21 +40,27 @@ module CreateForeground = (Props: ForegroundProps) => {
     let oldState = state.contents
     %debugger
     let newState = switch event {
-    | Cleanup => // TODO fix cleanup
-      oldState
+    | Cleanup => 
+      oldState.pingInterval->Option.forEach(Window.clearInterval)
+      switch oldState.delayTimeout {
+        | Timeout(t) => Window.clearTimeout(t)
+        | _ => ()
+      }
+      {
+        ...oldState,
+        pingInterval: None,
+        delayTimeout: None,
+      }
     | Init =>
       Props.sendMessage(CheckFilter(Location.href))
       let pingInterval = Window.setInterval(() => {
         reduce(Ping)
-      }, 1000 * 10)->Some
+      }, 1000 * 60)->Some
 
       {
         filter: Off,
         pingInterval: pingInterval,
-        delayTimeout: switch oldState.delayTimeout {
-        | Expired => Expired
-        | _ => None
-        },
+        delayTimeout: None,
         url: Location.href,
       }
     | Ping =>

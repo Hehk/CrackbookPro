@@ -5,3 +5,5 @@
 
 @bs.set external setClassName: (Dom.node, string) => unit = "className"
 
+// TODO this is not technically correct but works for now
+@bs.send external pause : (Dom.node) => unit = "pause"

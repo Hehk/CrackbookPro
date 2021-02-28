@@ -1714,11 +1714,121 @@
     exports.getFilter = getFilter;
   });
 
+  // ../../node_modules/bs-platform/lib/js/belt_Option.js
+  var require_belt_Option = __commonJS((exports) => {
+    "use strict";
+    var Curry = require_curry();
+    var Caml_option = require_caml_option();
+    function forEachU(opt, f) {
+      if (opt !== void 0) {
+        return f(Caml_option.valFromOption(opt));
+      }
+    }
+    function forEach(opt, f) {
+      return forEachU(opt, Curry.__1(f));
+    }
+    function getExn(x) {
+      if (x !== void 0) {
+        return Caml_option.valFromOption(x);
+      }
+      throw {
+        RE_EXN_ID: "Not_found",
+        Error: new Error()
+      };
+    }
+    function mapWithDefaultU(opt, $$default, f) {
+      if (opt !== void 0) {
+        return f(Caml_option.valFromOption(opt));
+      } else {
+        return $$default;
+      }
+    }
+    function mapWithDefault(opt, $$default, f) {
+      return mapWithDefaultU(opt, $$default, Curry.__1(f));
+    }
+    function mapU(opt, f) {
+      if (opt !== void 0) {
+        return Caml_option.some(f(Caml_option.valFromOption(opt)));
+      }
+    }
+    function map(opt, f) {
+      return mapU(opt, Curry.__1(f));
+    }
+    function flatMapU(opt, f) {
+      if (opt !== void 0) {
+        return f(Caml_option.valFromOption(opt));
+      }
+    }
+    function flatMap(opt, f) {
+      return flatMapU(opt, Curry.__1(f));
+    }
+    function getWithDefault(opt, $$default) {
+      if (opt !== void 0) {
+        return Caml_option.valFromOption(opt);
+      } else {
+        return $$default;
+      }
+    }
+    function isSome(param) {
+      return param !== void 0;
+    }
+    function isNone(x) {
+      return x === void 0;
+    }
+    function eqU(a, b, f) {
+      if (a !== void 0) {
+        if (b !== void 0) {
+          return f(Caml_option.valFromOption(a), Caml_option.valFromOption(b));
+        } else {
+          return false;
+        }
+      } else {
+        return b === void 0;
+      }
+    }
+    function eq(a, b, f) {
+      return eqU(a, b, Curry.__2(f));
+    }
+    function cmpU(a, b, f) {
+      if (a !== void 0) {
+        if (b !== void 0) {
+          return f(Caml_option.valFromOption(a), Caml_option.valFromOption(b));
+        } else {
+          return 1;
+        }
+      } else if (b !== void 0) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
+    function cmp(a, b, f) {
+      return cmpU(a, b, Curry.__2(f));
+    }
+    exports.forEachU = forEachU;
+    exports.forEach = forEach;
+    exports.getExn = getExn;
+    exports.mapWithDefaultU = mapWithDefaultU;
+    exports.mapWithDefault = mapWithDefault;
+    exports.mapU = mapU;
+    exports.map = map;
+    exports.flatMapU = flatMapU;
+    exports.flatMap = flatMap;
+    exports.getWithDefault = getWithDefault;
+    exports.isSome = isSome;
+    exports.isNone = isNone;
+    exports.eqU = eqU;
+    exports.eq = eq;
+    exports.cmpU = cmpU;
+    exports.cmp = cmp;
+  });
+
   // ../../src/App.bs.js
   var require_App_bs = __commonJS((exports) => {
     "use strict";
     var Curry = require_curry();
     var Filter = require_Filter_bs();
+    var Belt_Option = require_belt_Option();
     var Caml_option = require_caml_option();
     function CreateForeground(Props) {
       var state = {
@@ -1750,17 +1860,29 @@
               });
               var pingInterval = Caml_option.some(setInterval(function(param) {
                 return reduce(3);
-              }, 1e4));
-              var match = oldState.delayTimeout;
+              }, 6e4));
               newState = {
                 pingInterval,
-                delayTimeout: typeof match === "number" && match !== 0 ? 1 : 0,
+                delayTimeout: 0,
                 filter: 1,
                 url: window.location.href
               };
               break;
             case 2:
-              newState = oldState;
+              Belt_Option.forEach(oldState.pingInterval, function(prim) {
+                clearInterval(prim);
+              });
+              var t = oldState.delayTimeout;
+              if (typeof t === "number") {
+              } else {
+                clearTimeout(t._0);
+              }
+              newState = {
+                pingInterval: void 0,
+                delayTimeout: 0,
+                filter: oldState.filter,
+                url: oldState.url
+              };
               break;
             case 3:
               Curry._1(Props.sendMessage, {
@@ -1783,14 +1905,14 @@
         } else {
           var filter = $$event._0;
           console.log("FILTER", filter, "DELAY_TIMEOUT", oldState.delayTimeout);
+          var match = oldState.delayTimeout;
+          var filter$1 = typeof match === "number" && match !== 0 && typeof filter !== "number" ? 1 : filter;
           var match$1 = oldState.delayTimeout;
-          var filter$1 = typeof match$1 === "number" && match$1 !== 0 && typeof filter !== "number" ? 1 : filter;
-          var match$2 = oldState.delayTimeout;
-          var delayTimeout = typeof match$2 === "number" && !(match$2 !== 0 || typeof filter$1 === "number") ? {
+          var delayTimeout = typeof match$1 === "number" && !(match$1 !== 0 || typeof filter$1 === "number") ? {
             _0: setTimeout(function(param) {
               return reduce(0);
             }, Math.imul(filter$1._0, 1e3))
-          } : match$2;
+          } : match$1;
           newState = {
             pingInterval: oldState.pingInterval,
             delayTimeout,

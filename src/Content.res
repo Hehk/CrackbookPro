@@ -1,6 +1,7 @@
 open Filter
 
 let cls = "chrome-blocker-12345"
+let hasOverlay = ref(false)
 let createOverlay = message => {
   let text = Document.createElement("div")
   Node.setStyle(
@@ -30,30 +31,31 @@ let createOverlay = message => {
   overlay
 }
 
-let applyOverlay = message => {
-  let body = Document.querySelector("body")
-  switch body {
-  | None => () // TODO this should retry, no body could mean an unloaded page
-  | Some(body) =>
-    let overlay = createOverlay(message)
-    Node.appendChild(body, overlay)->ignore
-  }
+let removeOverlay = () => {
+  Document.querySelectorAll("." ++ cls)->Array.map(Node.remove)->ignore
+  hasOverlay := false
 }
 
-let removeOverlay = () => {
-  switch Document.querySelector("." ++ cls) {
-  | None => ()
-  | Some(overlay) => Node.remove(overlay)
+let applyOverlay = message => {
+  if (!hasOverlay.contents) {
+    let body = Document.querySelector("body")
+    switch body {
+    | None => () // TODO this should retry, no body could mean an unloaded page
+    | Some(body) =>
+      let overlay = createOverlay(message)
+      Document.querySelectorAll("video")->Array.forEach(Node.pause)
+
+      Node.appendChild(body, overlay)->ignore
+      hasOverlay := true
+    }
   }
 }
 
 let render = state => {
   open App
   switch state.filter {
-  | Delay(time) =>
-    applyOverlay("Delayed: " ++ Int.toString(time))
-  | Block =>
-    applyOverlay("BLOCKED")
+  | Delay(time) => applyOverlay("Delayed: " ++ Int.toString(time))
+  | Block => applyOverlay("BLOCKED")
   | Off => removeOverlay()
   }
 }
