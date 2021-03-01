@@ -22,6 +22,16 @@ let withinPeriod = (startTime, endTime, time) => {
   isAfterStart && isBeforeEnd
 }
 
+let make = (~patterns, ~mode, ~days, ~startTime, ~endTime) => {
+  {
+    patterns,
+    mode,
+    days,
+    startTime: parseTime(startTime),
+    endTime: parseTime(endTime)
+  }
+}
+
 // TODO move this out to a config file
 // TODO make this a param of shouldFilter
 let filters = [

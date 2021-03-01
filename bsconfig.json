@@ -12,7 +12,9 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "@rescript/react"
   ],
+  "reason": { "react-jsx": 3 },
   "bsc-flags": ["-open Belt"],
   "js-post-build": {
     "cmd": "./esbuild.js"

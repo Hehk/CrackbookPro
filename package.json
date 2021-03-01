@@ -19,6 +19,9 @@
     "jest": "^26.6.3"
   },
   "dependencies": {
-    "crx-hotreload": "^1.0.6"
+    "@rescript/react": "^0.10.1",
+    "crx-hotreload": "^1.0.6",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }

@@ -9,7 +9,10 @@ let createOverlay = message => {
     `
     color: black;
     font-family: monospace;
-    padding: 1em;
+    padding: 1rem;
+    grid-column: 2;
+    grid-row: 2;
+    text-align: center;
   `,
   )
   Node.setInnerText(text, message)
@@ -19,6 +22,11 @@ let createOverlay = message => {
   Node.setStyle(
     overlay,
     `
+    font-size: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-gap: 1rem;
     height: 100vh;
     width: 100vw;
     background: white;

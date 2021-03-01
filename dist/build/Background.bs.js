@@ -1605,6 +1605,15 @@
         return false;
       }
     }
+    function make(patterns, mode, days, startTime, endTime) {
+      return {
+        patterns,
+        mode,
+        days,
+        startTime: new Date("01/01/01 " + startTime),
+        endTime: new Date("01/01/01 " + endTime)
+      };
+    }
     var filters = [
       {
         patterns: [
@@ -1710,6 +1719,7 @@
     }
     exports.parseTime = parseTime;
     exports.withinPeriod = withinPeriod;
+    exports.make = make;
     exports.filters = filters;
     exports.getFilter = getFilter;
   });

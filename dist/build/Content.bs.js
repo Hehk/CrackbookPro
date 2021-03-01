@@ -1605,6 +1605,15 @@
         return false;
       }
     }
+    function make(patterns, mode, days, startTime, endTime) {
+      return {
+        patterns,
+        mode,
+        days,
+        startTime: new Date("01/01/01 " + startTime),
+        endTime: new Date("01/01/01 " + endTime)
+      };
+    }
     var filters = [
       {
         patterns: [
@@ -1710,6 +1719,7 @@
     }
     exports.parseTime = parseTime;
     exports.withinPeriod = withinPeriod;
+    exports.make = make;
     exports.filters = filters;
     exports.getFilter = getFilter;
   });
@@ -1970,11 +1980,11 @@
     };
     function createOverlay(message) {
       var text = document.createElement("div");
-      text.style = "\n    color: black;\n    font-family: monospace;\n    padding: 1em;\n  ";
+      text.style = "\n    color: black;\n    font-family: monospace;\n    padding: 1rem;\n    grid-column: 2;\n    grid-row: 2;\n    text-align: center;\n  ";
       text.innerText = message;
       var overlay = document.createElement("div");
       overlay.className = cls;
-      overlay.style = "\n    height: 100vh;\n    width: 100vw;\n    background: white;\n    position: fixed;\n    top: 0;\n    z-index: " + Js_int.max.toString() + ";\n  ";
+      overlay.style = "\n    font-size: 18px;\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    grid-template-rows: repeat(4, 1fr);\n    grid-gap: 1rem;\n    height: 100vh;\n    width: 100vw;\n    background: white;\n    position: fixed;\n    top: 0;\n    z-index: " + Js_int.max.toString() + ";\n  ";
       overlay.appendChild(text);
       return overlay;
     }
