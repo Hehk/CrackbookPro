@@ -2,6 +2,6 @@
 /node_modules/
 /lib/
 /dist/*.bundle.js
-/src/*.bs.js
+/src/**/*.bs.js
 .bsb.lock
 .merlin
