@@ -50,9 +50,9 @@ let applyOverlay = message => {
     switch body {
     | None => () // TODO this should retry, no body could mean an unloaded page
     | Some(body) =>
-      let overlay = createOverlay(message)
       Document.querySelectorAll("video")->Array.forEach(Node.pause)
 
+      let overlay = createOverlay(message)
       Node.appendChild(body, overlay)->ignore
       hasOverlay := true
     }
@@ -84,5 +84,5 @@ let watchUrlChange = Window.setInterval(() => {
 }, 1000)
 
 Foreground.reduce(Init)
-Window.onFocus(Window.window, () => Foreground.reduce(Init))
+Window.onFocus(Window.window, () => Foreground.reduce(Ping))
 Window.onBlur(Window.window, () => Foreground.reduce(Cleanup))

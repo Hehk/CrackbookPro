@@ -40,28 +40,14 @@ let filters = [
     mode: Block,
     days: [1, 2, 3, 4, 5, 6, 7],
     startTime: parseTime("00:00"),
-    endTime: parseTime("12:00"),
-  },
-  {
-    patterns: ["youtube\.com", "chess\.com"],
-    mode: Block,
-    days: [1, 2, 3, 4, 5, 6, 7],
-    startTime: parseTime("20:30"),
-    endTime: parseTime("23:59"),
-  },
-  {
-    patterns: ["youtube\.com"],
-    mode: Delay(5),
-    days: [1, 2, 3, 4, 5, 6, 7],
-    startTime: parseTime("00:00"),
     endTime: parseTime("23:59"),
   },
   {
     patterns: ["twitter\.com", "reddit\.com"],
     mode: Block,
-    days: [1, 2, 3, 4, 5, 6, 7],
+    days: [1, 2, 3, 4, 5],
     startTime: parseTime("00:00"),
-    endTime: parseTime("18:00"),
+    endTime: parseTime("23:59"),
   },
 ]
 

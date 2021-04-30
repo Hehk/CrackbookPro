@@ -38,7 +38,6 @@ module CreateForeground = (Props: ForegroundProps) => {
 
   let rec reduce = event => {
     let oldState = state.contents
-    %debugger
     let newState = switch event {
     | Cleanup => 
       oldState.pingInterval->Option.forEach(Window.clearInterval)
@@ -70,7 +69,6 @@ module CreateForeground = (Props: ForegroundProps) => {
       Props.sendMessage(CheckFilter(newUrl))
       {...oldState, url: newUrl}
     | ChangeFilter(filter) =>
-      Js.log4("FILTER", filter, "DELAY_TIMEOUT", oldState.delayTimeout)
       // If there is an expired delay, don't create another one
       let filter = switch (oldState.delayTimeout, filter) {
       | (Expired, Delay(_)) => Filter.Off
@@ -85,7 +83,6 @@ module CreateForeground = (Props: ForegroundProps) => {
       }
       {...oldState, delayTimeout: delayTimeout, filter: filter}
     | DelayExpired =>
-      %debugger
       {...oldState, delayTimeout: Expired, filter: Off}
     }
 

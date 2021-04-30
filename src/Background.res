@@ -1,4 +1,3 @@
-%%raw(`require('crx-hotreload')`)
 module Background = App.CreateBackground({
   type id = int
   let sendMessage = (id, message) => {
