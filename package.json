@@ -2,10 +2,9 @@
   "name": "rescript-project-template",
   "version": "0.0.1",
   "scripts": {
-    "build": "bsb -make-world",
-    "clean": "bsb -clean-world",
-    "start": "bsb -make-world -w",
-    "start-webpack": "webpack --watch",
+    "build": "rescript build -with-deps",
+    "clean": "rescript clean",
+    "start": "rescript build -w",
     "test": "jest"
   },
   "keywords": [
@@ -14,13 +13,12 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "*",
     "esbuild": "^0.8.46",
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "rescript": "^9.1.2"
   },
   "dependencies": {
     "@rescript/react": "^0.10.1",
-    "crx-hotreload": "^1.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   }
